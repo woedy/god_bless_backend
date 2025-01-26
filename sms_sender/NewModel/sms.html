@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send SMS via SMTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Send SMS via SMTP</h1>
+    <div class="form-container">
+        <form method="POST">
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" required>
+
+            <label for="carrier_gateway">Carrier Gateway:</label>
+            <input type="text" id="carrier_gateway" name="carrier_gateway" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+
+            <label for="smtp_server">SMTP Server:</label>
+            <input type="text" id="smtp_server" name="smtp_server" value="smtp.gmail.com" required>
+
+            <label for="smtp_port">SMTP Port:</label>
+            <input type="number" id="smtp_port" name="smtp_port" value="587" required>
+
+            <label for="sender_email">Your Email:</label>
+            <input type="email" id="sender_email" name="sender_email" required>
+
+            <label for="sender_password">Your Password:</label>
+            <input type="password" id="sender_password" name="sender_password" required>
+
+            <button type="submit">Send SMS</button>
+        </form>
+    </div>
+</body>
+</html>

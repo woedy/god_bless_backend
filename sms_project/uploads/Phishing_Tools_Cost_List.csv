@@ -1,0 +1,27 @@
+Tool/Service,Purpose,Cost
+Kali Linux,Penetration testing OS,Free
+Parrot Security OS,Security-focused OS,Free
+Gophish,Phishing framework,Free
+Evilginx2,Phishing with session hijacking,Free
+Blackeye/HiddenEye,Phishing page generator,Free
+SET (Social-Engineer Toolkit),Phishing and social engineering,Free
+Wireshark,Network traffic analysis,Free
+Nmap,Network scanning,Free
+Metasploit Framework,Exploitation and payload delivery,Free
+Ngrok,Tunneling for hosting phishing sites,Free (Limited)
+Let’s Encrypt,SSL certificates for phishing sites,Free
+HTTrack,Website cloning,Free
+DNSTwist,Domain monitoring,Free
+John the Ripper/Hashcat,Password cracking,Free
+"Cheap VPS (DigitalOcean, Linode)",Hosting phishing kits/tools,~$5–$20/month
+Domain Registration,Look-alike domains,~$10–$20/year
+Residential Proxies (Smartproxy),Anonymous IP routing,~$15–$50/month
+"URL Shorteners (e.g., Bitly)",Disguising phishing links,Free/Premium (~$29/month for analytics)
+Ngrok Pro,Extended tunneling features,~$5/month
+King Phisher,Phishing campaign management,Free (but setup required)
+Cloudflare Pro/Business,Hosting phishing sites (tunnels),~$20–$200/month
+Custom SMTP Servers,Email spoofing,~$10–$50/month
+Residential Proxy Services (Bright Data),Advanced proxy service,~$50–$300/month
+Vulnerability Scanners (Nessus Pro),Phishing defense testing,"~$3,000/year"
+Malware-as-a-Service Kits,Pre-configured phishing tools,"~$100–$500 (on dark web, illegal)"
+Crypters,Obfuscate phishing payloads,~$50–$200 (illegal versions)

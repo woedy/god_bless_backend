@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk SMS via SMTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+            margin: 0;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        form {
+            width: 60%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="number"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message-list {
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            width: 60%;
+            border-radius: 4px;
+            list-style-type: none;
+        }
+
+        .message-list li {
+            margin: 5px 0;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .message-list li.error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload CSV for Bulk SMS</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <h2>SMTP Settings</h2>
+        <label for="smtp_server">SMTP Server:</label>
+        <input type="text" name="smtp_server" required><br><br>
+        
+        <label for="smtp_port">SMTP Port:</label>
+        <input type="number" name="smtp_port" required><br><br>
+        
+        <label for="smtp_user">SMTP Username (Your Email):</label>
+        <input type="email" name="smtp_user" required><br><br>
+        
+        <label for="smtp_password">SMTP Password:</label>
+        <input type="password" name="smtp_password" required><br><br>
+
+        <h2>Message Details</h2>
+        <label for="subject">Subject:</label>
+        <input type="text" name="subject" required><br><br>
+
+        <label for="message">Message:</label>
+        <textarea name="message" rows="5" required></textarea><br><br>
+
+        <h2>Carrier Details</h2>
+        <label for="carrier">Carrier Name:</label>
+        <input type="text" name="carrier" required><br><br>
+
+        <h2>CSV File</h2>
+        <input type="file" name="file" accept=".csv" required><br><br>
+
+        <button type="submit">Upload and Send SMS</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="message-list">
+            {% for message in messages %}
+                <li class="error-message">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

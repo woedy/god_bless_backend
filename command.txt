@@ -1,0 +1,33 @@
+sudo apt update
+
+
+
+
+docker-compose build
+
+
+docker-compose run --rm god_bless_app
+docker-compose up
+
+docker exec -it god_bless_app sh
+
+sudo chattr -i mysite
+
+sudo rm -r mysite
+
+
+
+sudo docker volume rm $(sudo docker volume ls -q)
+sudo docker rm -f $(sudo docker ps -a -q)
+sudo docker rmi $(sudo docker images -q)
+
+
+docker run -p 6379:6379 -d redis:5
+
+
+
+pyinstaller --onefile --add-data "templates;templates" app.py
+pyinstaller --onefile --add-data "templates:index.html" app.py
+
+pyinstaller --onefile --add-data "templates;templates" --add-data "uploads;uploads" app.py
+pyinstaller --onefile --add-data "templates;templates" --add-data "uploads;uploads" app.py

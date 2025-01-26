@@ -1,0 +1,21 @@
+PROVIDERS = {
+    "AT&T": {"sms": "txt.att.net"},
+    "Boost Mobile": {"sms": "sms.myboostmobile.com"},
+    "C-Spire": {"sms": "cspire1.com"},
+    "Cricket Wireless": {"sms": "sms.cricketwireless.net"},
+    "Consumer Cellular": {"sms": "mailmymobile.net"},
+    "Google Project Fi": {"sms": "msg.fi.google.com"},
+    "Metro PCS": {"sms": "mymetropcs.com"},
+    "Mint Mobile": {"sms": "mailmymobile.net"},
+    "Page Plus": {"sms": "vtext.com"},
+    "Republic Wireless": {"sms": "text.republicwireless.com"},
+    "Sprint": {"sms": "messaging.sprintpcs.com"},
+    "Straight Talk": {"sms": "vtext.com"},
+    "T-Mobile": {"sms": "tmomail.net"},
+    "Ting": {"sms": "message.ting.com"},
+    "Tracfone": {"sms": ""},  # Tracfone has no SMS in this example
+    "U.S. Cellular": {"sms": "email.uscc.net"},
+    "Verizon": {"sms": "vtext.com"},
+    "Virgin Mobile": {"sms": "vmobl.com"},
+    "Xfinity Mobile": {"sms": "vtext.com"},
+}
