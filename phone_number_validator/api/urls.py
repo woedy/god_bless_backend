@@ -11,6 +11,7 @@ urlpatterns = [
     path('validate-number-quality/', validate_phone_number_quality_ORIG, name="validate_phone_number_quality_ORIG"),
 
 
+#####
     path('validate-number-id/', validate_phone_number, name="validate_phone_number"),
     path('start-validation/', start_validation, name="start_validation"),
        
