@@ -16,3 +16,4 @@ djangorestframework-simplejwt
 beautifulsoup4
 Flask
 phonenumbers
+gunicorn
