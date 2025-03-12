@@ -25,8 +25,9 @@ urlpatterns = [
     path('api/accounts/', include('accounts.api.urls', 'accounts_api')),
     path('api/phone-generator/', include('phone_generator.api.urls', 'phone_generator_api')),
     path('api/phone-validator/', include('phone_number_validator.api.urls', 'phone_number_validator_api')),
-    path('api/sms-sender/', include('sms_sender.api.urls', 'sms_sender_validator_api')),
+    path('api/sms-sender/', include('sms_sender.urls', 'sms_sender_validator_api')),
     path('api/dashboard/', include('dashboard.api.urls', 'dashboard_api')),
+    path('api/smtp-manager/', include('smtps.urls', 'smtp_api')),
 
 ]
 

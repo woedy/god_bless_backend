@@ -16,6 +16,9 @@ from phone_generator.api.serializers import AllPhoneNumbersSerializer
 from phone_generator.models import PhoneNumber
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+
+from smtps.models import SmtpManager
+from smtps.serializers import SmtpManagerSerializer
 ### Twilio, NumVerify, or Nexmo , apilayer , phonenumbers
 User = get_user_model()
 
@@ -56,11 +59,19 @@ def dashboard_view(request):
     valid_numbers = PhoneNumber.objects.all().filter(is_archived=False, valid_number=True, type='mobile', user=user).order_by('-id')
     valid_numbers_serializer = PhoneNumberSerializer(valid_numbers[:5], many=True)
 
+    smtps = SmtpManager.objects.all().filter(is_archived=False, user=user).order_by('-id')
+    #smtps_serializer = SmtpManagerSerializer(smtps, many=True)
+
 
     data['generated_count'] = all_numbers.count()
     data['validated_count'] = valid_numbers.count()
     data['sms_sent_count'] = 0
     data['api_usage_count'] = 0
+
+    data['sent_email'] = 0
+    data['sent_sms'] = 0
+    data['loaded_smtps'] = smtps.count()
+    data['email_templates'] = 0
 
     data['recent_generated'] = all_numbers_serializer.data
     data['recent_validated'] = valid_numbers_serializer.data

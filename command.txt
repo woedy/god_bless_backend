@@ -31,3 +31,6 @@ pyinstaller --onefile --add-data "templates:index.html" app.py
 
 pyinstaller --onefile --add-data "templates;templates" --add-data "uploads;uploads" app.py
 pyinstaller --onefile --add-data "templates;templates" --add-data "uploads;uploads" app.py
+
+
+Hello @FIRST@ @LAST@. Your Reference number is @REF@, and your ticket number is @TICKET@. welcome @LAST@. @TIME@,, @DAY@-@MONTH@-@YEAR@.

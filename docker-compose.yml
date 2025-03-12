@@ -36,7 +36,7 @@ services:
     build:
       context: ../god_bless_frontend  # Adjust the path to your React app
     ports:
-      - "7777:7777"  # Map to the host's port
+      - "4173:4173"  # Map to the host's port
     environment:
       - REACT_APP_API_URL=http://god_bless_app:6161  # API URL for Django service
 

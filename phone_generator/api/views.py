@@ -15,6 +15,8 @@ from phone_generator.api.serializers import AllPhoneNumbersSerializer
 from phone_generator.models import PhoneNumber
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+
+from sms_sender.api.etext.providers import PROVIDERS_LIST
 ### Twilio, NumVerify, or Nexmo , apilayer , phonenumbers
 User = get_user_model()
 
@@ -329,6 +331,10 @@ def download_csv_view(request):
     phone_numbers = all_numbers.values_list('phone_number', flat=True)
 
     data['numbers'] = list(phone_numbers)  # Convert queryset to a list of phone numbers
+
+
+    data['providers'] = PROVIDERS_LIST
+
     payload['message'] = "Successful"
     payload['data'] = data
 
