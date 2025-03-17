@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     "phone_generator",
     "sms_sender",
     "phone_number_validator",
-    "smtps"
+    "smtps",
+    "projects"
 ]
 
 AUTH_USER_MODEL = "accounts.User"

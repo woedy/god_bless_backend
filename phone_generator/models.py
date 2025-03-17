@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from projects.models import Project
+
 User = get_user_model()
 
 
@@ -16,6 +18,7 @@ STATUS_CHOICES = [
 
 class PhoneNumber(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_numbers')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='user_projectss')
 
     phone_number = models.CharField(max_length=15, unique=True)
     valid_number = models.BooleanField(null=True)
@@ -23,6 +26,7 @@ class PhoneNumber(models.Model):
     carrier = models.CharField(max_length=200, null=True, blank=True)
     location = models.CharField(max_length=200, null=True, blank=True)
     type = models.CharField(max_length=200, null=True, blank=True)
+    state = models.CharField(max_length=200, null=True, blank=True)
 
     international = models.CharField(max_length=200, null=True, blank=True)
     local = models.CharField(max_length=200, null=True, blank=True)

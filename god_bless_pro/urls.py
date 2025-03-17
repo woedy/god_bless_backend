@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/sms-sender/', include('sms_sender.urls', 'sms_sender_validator_api')),
     path('api/dashboard/', include('dashboard.api.urls', 'dashboard_api')),
     path('api/smtp-manager/', include('smtps.urls', 'smtp_api')),
+    path('api/projects/', include('projects.urls', 'projects_api')),
 
 ]
 

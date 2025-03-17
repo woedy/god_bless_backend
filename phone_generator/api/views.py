@@ -16,6 +16,7 @@ from phone_generator.models import PhoneNumber
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 
+from projects.models import Project
 from sms_sender.api.etext.providers import PROVIDERS_LIST
 ### Twilio, NumVerify, or Nexmo , apilayer , phonenumbers
 User = get_user_model()
@@ -50,7 +51,6 @@ def generate_numbers_viewwww(request, area_code):
     return JsonResponse({"phone_numbers": phone_numbers})
 
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
@@ -61,11 +61,15 @@ def generate_numbers_view(request):
 
     if request.method == 'POST':
         user_id = request.data.get('user_id', "")
+        project_id = request.data.get('project_id', "")
         area_code = request.data.get('area_code', "")
         size = int(request.data.get('size', ""))
 
+        # Validate input
         if not user_id:
             errors['user_id'] = ['User ID is required.']
+        if not project_id:
+            errors['project_id'] = ['Project ID is required.']
 
         if not area_code:
             errors['area_code'] = ['Area code is required.']
@@ -78,30 +82,44 @@ def generate_numbers_view(request):
 
         try:
             user = User.objects.get(user_id=user_id)
-        except:
+        except User.DoesNotExist:
             errors['user_id'] = ['User does not exist.']
 
-
-
+        try:
+            project = Project.objects.get(id=project_id)
+        except:
+            errors['project_id'] = ['Project does not exist.']
 
         if errors:
             payload['message'] = "Errors"
             payload['errors'] = errors
             return Response(payload, status=status.HTTP_400_BAD_REQUEST)
 
+        # Generate unique phone numbers
         phone_numbers = generate_phone_numbers(area_code, size)
 
-        for number in phone_numbers:
-            new_phone = PhoneNumber.objects.get_or_create(
-                user=user,
-                phone_number=number
-            )
+        # Check for existing phone numbers in the database
+        existing_phone_numbers = set(
+            PhoneNumber.objects.filter(phone_number__in=phone_numbers)
+            .values_list('phone_number', flat=True)
+        )
 
+        # Filter out any phone numbers that already exist in the database
+        unique_phone_numbers = [num for num in phone_numbers if num not in existing_phone_numbers]
 
+        # Prepare PhoneNumber instances for bulk creation
+        phone_number_objects = [
+            PhoneNumber(user=user, project=project, phone_number=number) for number in unique_phone_numbers
+        ]
 
-        data['numbers'] = phone_numbers
+        # Bulk create phone numbers in batches
+        if phone_number_objects:
+            batch_size = 1000  # Adjust this value if necessary
+            for i in range(0, len(phone_number_objects), batch_size):
+                PhoneNumber.objects.bulk_create(phone_number_objects[i:i+batch_size])
 
-
+        # Return the list of generated numbers
+        data['numbers'] = unique_phone_numbers
         payload['message'] = "Successful"
         payload['data'] = data
 
@@ -110,21 +128,15 @@ def generate_numbers_view(request):
 
 
 def generate_phone_numbers(area_code, size):
-    phone_numbers = []
+    phone_numbers = set()  # Use a set to avoid duplicates during generation
 
-    for _ in range(size):
+    while len(phone_numbers) < size:  # Keep generating until we get the required unique numbers
         central_office_code = str(random.randint(100, 999))
         line_number = str(random.randint(1000, 9999))
-        phone_number = f"1{area_code}{central_office_code}{line_number}"  # No formatting for validation
-        phone_number_f = f"1 {area_code} {central_office_code} {line_number}" 
-        #is_valid, carrier = is_valid_number(phone_number)
-        #if is_valid:
-        #    phone_numbers.append({
-        #        'number': f"({area_code}) {central_office_code}-{line_number}",
-        #        'carrier': carrier
-        #    })
+        phone_number = f"1{area_code}{central_office_code}{line_number}"  # Unformatted version for database
+        phone_numbers.add(phone_number)  # Sets automatically handle uniqueness
 
-        phone_numbers.append(phone_number_f)
+    return list(phone_numbers)  # Convert the set back to a list to return
 
 
     return phone_numbers
@@ -143,6 +155,7 @@ def get_all_numbers_view(request):
     errors = {}
 
     user_id = request.query_params.get('user_id', None)
+    project_id = request.query_params.get('project_id', None)
     search_query = request.query_params.get('search', '')
     date = request.query_params.get('date', '')
     page_number = request.query_params.get('page', 1)
@@ -151,11 +164,18 @@ def get_all_numbers_view(request):
     
     if not user_id:
         errors['user_id'] = ['User ID is required.']
+    
+    if not project_id:
+        errors['project_id'] = ['Project ID is required.']
 
     try:
         user = User.objects.get(user_id=user_id)
     except:
         errors['user_id'] = ['User does not exist.']
+    try:
+        project = Project.objects.get(id=project_id)
+    except:
+        errors['project_id'] = ['Project does not exist.']
 
     
     if errors:
@@ -163,7 +183,7 @@ def get_all_numbers_view(request):
         payload['errors'] = errors
         return Response(payload, status=status.HTTP_400_BAD_REQUEST)
 
-    all_numbers = PhoneNumber.objects.all().filter(is_archived=False, user=user).order_by('-id')
+    all_numbers = PhoneNumber.objects.all().filter(is_archived=False, user=user, project=project).order_by('-id')
 
 
     if search_query:
@@ -218,6 +238,7 @@ def get_valid_numbers(request):
     errors = {}
 
     user_id = request.query_params.get('user_id', None)
+    project_id = request.query_params.get('project_id', None)
     search_query = request.query_params.get('search', '')
     date = request.query_params.get('date', '')
     page_number = request.query_params.get('page', 1)
@@ -226,11 +247,17 @@ def get_valid_numbers(request):
     
     if not user_id:
         errors['user_id'] = ['User ID is required.']
+    if not project_id:
+        errors['project_id'] = ['Project ID is required.']
 
     try:
         user = User.objects.get(user_id=user_id)
     except:
         errors['user_id'] = ['User does not exist.']
+    try:
+        project = Project.objects.get(id=project_id)
+    except:
+        errors['project_id'] = ['Project does not exist.']
 
     
     if errors:
@@ -239,7 +266,7 @@ def get_valid_numbers(request):
         return Response(payload, status=status.HTTP_400_BAD_REQUEST)
     
 
-    all_numbers = PhoneNumber.objects.all().filter(is_archived=False, valid_number=True, type='mobile', user=user).order_by('-id')
+    all_numbers = PhoneNumber.objects.all().filter(is_archived=False, valid_number=True, type='Mobile', user=user, project=project).order_by('-id')
 
 
     if search_query:
@@ -357,14 +384,21 @@ def clear_numbers_view(request):
 
     if request.method == 'GET':
         user_id = request.query_params.get('user_id', None)
+        project_id = request.query_params.get('project_id', None)
 
         if not user_id:
             errors['user_id'] = ['User ID is required.']
+        if not project_id:
+            errors['project_id'] = ['Project ID is required.']
 
         try:
             user = User.objects.get(user_id=user_id)
         except User.DoesNotExist:
             errors['user_id'] = ['User does not exist.']
+        try:
+            project = Project.objects.get(id=project_id)
+        except:
+            errors['project_id'] = ['Project does not exist.']
 
         if errors:
             payload['message'] = "Errors"
@@ -372,10 +406,10 @@ def clear_numbers_view(request):
             return Response(payload, status=status.HTTP_400_BAD_REQUEST)
 
         # Delete invalid numbers (valid_number=False)
-        PhoneNumber.objects.filter(user=user, valid_number=False).delete()
+        PhoneNumber.objects.filter(user=user, project=project, valid_number=False).delete()
 
         # Delete valid numbers where type is not "mobile"
-        PhoneNumber.objects.filter(user=user, valid_number=True).exclude(type="mobile").delete()
+        PhoneNumber.objects.filter(user=user, project=project, valid_number=True).exclude(type="Mobile").exclude(type='mobile').delete()
 
         payload['message'] = "Successful"
         payload['data'] = data
@@ -383,6 +417,70 @@ def clear_numbers_view(request):
     return Response(payload, status=status.HTTP_200_OK)
 
 
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def delete_all_view(request):
+    payload = {}
+    data = {}
+    errors = {}
+
+    if request.method == 'GET':
+        user_id = request.query_params.get('user_id', None)
+        project_id = request.query_params.get('project_id', None)
+
+        if not user_id:
+            errors['user_id'] = ['User ID is required.']
+        if not project_id:
+            errors['project_id'] = ['Project ID is required.']
+
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            errors['user_id'] = ['User does not exist.']
+        try:
+            project = Project.objects.get(id=project_id)
+        except:
+            errors['project_id'] = ['Project does not exist.']
+
+        if errors:
+            payload['message'] = "Errors"
+            payload['errors'] = errors
+            return Response(payload, status=status.HTTP_400_BAD_REQUEST)
+
+        PhoneNumber.objects.filter(user=user, project=project).delete()
+
+        payload['message'] = "Successful"
+        payload['data'] = data
+
+    return Response(payload, status=status.HTTP_200_OK)
+
+
+
+
+
+@api_view(['GET'])
+
+def total_wipe_view(request):
+    payload = {}
+
+    if request.method == 'GET':
+        try:
+            # Bulk delete all records in one query
+            phone_numbers = PhoneNumber.objects.all()
+            deleted_count, _ = phone_numbers.delete()
+
+            payload['message'] = "Successfully deleted {} phone numbers".format(deleted_count)
+
+        except Exception as e:
+            payload['message'] = "Error occurred"
+            payload['errors'] = str(e)
+            return Response(payload, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(payload, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

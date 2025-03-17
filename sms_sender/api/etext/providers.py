@@ -54,53 +54,6 @@ PROVIDERS = {
 }
 
 
-PROVIDERS_LIST = [
-    "AT&T",
-    "Cricket Wireless",
-    "H2O Wireless",
-    "Pure TalkUSA",
-    "Consumer Cellular",
-    "Verizon",
-    "Visible",
-    "Page Plus Cellular",
-    "Total Wireless",
-    "Xfinity Mobile",
-    "Tracfone",
-    "TextNow",
-    "T-Mobile",
-    "Metro by T-Mobile",
-    "Mint Mobile",
-    "Republic Wireless",
-    "Simple Mobile",
-    "Ultra Mobile",
-    "Google Fi",
-    "Sprint",
-    "Boost Mobile",
-    "Virgin Mobile",
-    "T-Mobile Prepaid",
-    "U.S. Cellular",
-    "iWireless",
-    "Alaska Communications",
-    "C-Spire",
-    "CREDO Mobile",
-    "GCI",
-    "Boom Mobile",
-    "FreedomPop",
-    "Tello Mobile",
-    "Hello Mobile",
-    "Rok Mobile",
-    "Zipp Wireless",
-    "Bluegrass Cellular",
-    "American Messaging",
-    "Red Pocket Mobile",
-    "TruConnect",
-    "Twigby",
-    "TextMe",
-    "MetroPCS (Prepaid)",
-    "Simple Talk",
-    "Rogers Wireless",
-]
-
 
 
 PROVIDERS_LIST = [
